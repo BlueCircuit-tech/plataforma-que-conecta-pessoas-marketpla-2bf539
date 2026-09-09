@@ -577,6 +577,334 @@
   </script>
 </section>
 
+    <section data-tela="catalogo" class="hidden animate-fadein">
+  <div class="px-4 pt-4 pb-2 max-w-[430px] mx-auto">
+    <header class="mb-3">
+      <h1 class="text-2xl font-display font-semibold text-marca-900">Catálogo de Serviços</h1>
+      <p class="text-marca-700 font-body text-sm mt-1">Encontre profissionais para cada necessidade, compare avaliações e agende agora.</p>
+    </header>
+    <div class="flex justify-between items-center mb-4">
+      <button onclick="catalogo_limparFiltros()" class="flex items-center text-sm px-3 py-1 rounded-full bg-marca-50 hover:bg-marca-100 text-marca-700 font-medium transition mr-2">
+        <svg viewBox="0 0 16 16" class="w-4 h-4 mr-1" fill="none">
+          <path d="M5 5l6 6M11 5l-6 6" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Limpar filtros
+      </button>
+      <div>
+        <label for="catalogo_ordenacao" class="sr-only">Ordenar por</label>
+        <select id="catalogo_ordenacao" onchange="catalogo_filtrar()" class="text-sm font-body px-2 py-1 bg-marca-50 rounded-md border border-marca-200 focus:outline-none text-marca-800 cursor-pointer">
+          <option value="relevancia">Relevância</option>
+          <option value="preco">Menor preço</option>
+          <option value="avaliacao">Melhor avaliação</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Busca e Categorias -->
+    <div class="flex space-x-2 mb-3">
+      <div class="relative flex-1">
+        <input id="catalogo_busca"
+          oninput="catalogo_filtrar()"
+          autocomplete="off"
+          placeholder="Buscar serviço, profissional..."
+          class="w-full py-2 pl-9 pr-4 rounded-lg bg-marca-50 border border-marca-200 text-marca-900 font-body focus:outline-none focus:ring-2 focus:ring-marca-200 transition"
+        />
+        <svg class="absolute left-2 top-2.5 w-5 h-5 text-marca-400" fill="none" viewBox="0 0 20 20">
+          <circle cx="9" cy="9" r="7" stroke="#8B5CF6" stroke-width="2"/>
+          <path d="M15 15l-3-3" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <button onclick="catalogo_abrirFiltros()" aria-label="Abrir filtros" class="flex items-center px-3 py-2 bg-marca-500 text-white rounded-lg shadow-sm hover:bg-marca-600 transition active:scale-95">
+        <svg viewBox="0 0 20 20" fill="none" class="w-5 h-5 mr-1">
+          <path d="M2 5h16M4 10h12M7 15h6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Filtros
+      </button>
+    </div>
+
+    <div class="flex overflow-x-auto no-scrollbar pb-2 mb-2 -mx-1 space-x-2" id="catalogo_categorias">
+      <!-- categorias vão aqui via JS -->
+    </div>
+
+    <!-- Filtros laterais em modal -->
+    <dialog id="catalogo_modal_filtros" class="rounded-2xl border-0 w-[95vw] max-w-[380px] mx-auto shadow-lg transition animate-fadein">
+      <form class="p-5 font-body space-y-5 bg-white">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-lg font-semibold text-marca-900">Filtrar Serviços</h2>
+          <button onclick="catalogo_fecharFiltros();return false;" type="button" class="p-1 rounded-full hover:bg-marca-50 transition">
+            <svg viewBox="0 0 16 16" class="w-6 h-6" fill="none">
+              <path d="M5 5l6 6M11 5l-6 6" stroke="#4C1D95" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div>
+          <label class="block mb-1 text-marca-700">Preço por hora (R$)</label>
+          <div class="flex space-x-2">
+            <input id="catalogo_p_min" type="number" placeholder="mín" min="0" max="9999" class="w-1/2 px-2 py-2 rounded border border-marca-200 bg-marca-50 focus:ring-2 focus:ring-marca-200 outline-none text-marca-900" />
+            <input id="catalogo_p_max" type="number" placeholder="máx" min="0" max="9999" class="w-1/2 px-2 py-2 rounded border border-marca-200 bg-marca-50 focus:ring-2 focus:ring-marca-200 outline-none text-marca-900" />
+          </div>
+        </div>
+        <div>
+          <label class="block mb-1 text-marca-700">Avaliação mínima</label>
+          <select id="catalogo_avaliacao" class="w-full px-2 py-2 rounded border border-marca-200 bg-marca-50 focus:ring-2 focus:ring-marca-200 outline-none text-marca-900">
+            <option value="0">Qualquer</option>
+            <option value="4.5">Acima de 4.5</option>
+            <option value="4">Acima de 4.0</option>
+            <option value="3">Acima de 3.0</option>
+          </select>
+        </div>
+        <div>
+          <label class="block mb-1 text-marca-700">Distância máxima (km)</label>
+          <input id="catalogo_distancia" type="number" min="1" max="50" placeholder="ex: 10" class="w-full px-2 py-2 rounded border border-marca-200 bg-marca-50 focus:ring-2 focus:ring-marca-200 outline-none text-marca-900"/>
+        </div>
+        <button onclick="catalogo_aplicarFiltros();return false;" class="btn w-full bg-marca-700 hover:bg-marca-800 transition active:scale-95 flex items-center justify-center text-white font-medium py-2 rounded-lg mt-4">
+          <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 16 16"><path d="M4 8l3 3 5-5" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          Aplicar Filtros
+        </button>
+      </form>
+    </dialog>
+
+    <!-- Cards verticais dos profissionais -->
+    <div id="catalogo_lista" class="flex flex-col space-y-4 mt-2 pb-8">
+      <!-- Cards via JS -->
+    </div>
+
+    <!-- Vazio bonito -->
+    <div id="catalogo_vazio" class="hidden flex-col items-center justify-center text-marca-800 mt-14">
+      <svg class="w-14 h-14 mb-3" viewBox="0 0 56 56" fill="none">
+        <defs>
+          <linearGradient id="cat-vz" x1="0" y1="0" x2="55" y2="55" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#8B5CF6"/>
+            <stop offset="1" stop-color="#FAF5FF"/>
+          </linearGradient>
+        </defs>
+        <circle cx="28" cy="28" r="28" fill="url(#cat-vz)"/>
+        <path d="M19 33c1-8 16-8 17 0M27 25a2 2 0 104 0 2 2 0 00-4 0z" stroke="#4C1D95" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="text-lg font-body font-medium">Nenhum profissional encontrado</span>
+      <span class="text-marca-500 text-sm mt-1">Ajuste os filtros e tente novamente.</span>
+    </div>
+  </div>
+
+  <script>
+  // Dados de exemplo dos profissionais
+  const catalogo_PROFS = [
+    {
+      id: 1,
+      nome: "Amanda Souza",
+      foto: null,
+      categoria: "Eletricista",
+      preco: 120,
+      avaliacao: 4.9,
+      avaliacoes: 48,
+      distancia: 4,
+      especialidade: "Instalações residenciais",
+      tags: ["Residencial", "Urbano"],
+      resumo: "12 anos de experiência, execução limpa e rápida. Atende prédios e casas.",
+      horarios: "Seg a Sáb | 8h às 20h",
+      historico: "Mais de 300 atendimentos realizados, especialista em painéis elétricos.",
+    },
+    {
+      id: 2,
+      nome: "Pedro Lima",
+      foto: null,
+      categoria: "Encanador",
+      preco: 90,
+      avaliacao: 4.5,
+      avaliacoes: 26,
+      distancia: 2,
+      especialidade: "Desentupimentos rápidos",
+      tags: ["Emergência", "Rápido"],
+      resumo: "Pronto atendimento para emergências e vazamentos.",
+      horarios: "Todos os dias | 7h às 22h",
+      historico: "Clientela fiel em condomínios, técnico certificado.",
+    },
+    {
+      id: 3,
+      nome: "Júlia Ramos",
+      foto: null,
+      categoria: "Diarista",
+      preco: 100,
+      avaliacao: 4.7,
+      avaliacoes: 67,
+      distancia: 6,
+      especialidade: "Limpeza fina e pós-obra",
+      tags: ["Limpeza", "República"],
+      resumo: "Organização de ambientes e limpeza detalhada.",
+      horarios: "Seg a Sex | 7h às 19h",
+      historico: "Destaque no bairro Saúde por avaliações positivas.",
+    },
+    {
+      id: 4,
+      nome: "Anderson Martins",
+      foto: null,
+      categoria: "Jardineiro",
+      preco: 85,
+      avaliacao: 4.3,
+      avaliacoes: 14,
+      distancia: 8,
+      especialidade: "Poda e manutenção de jardins",
+      tags: ["Verde", "Podas"],
+      resumo: "Transforme seu jardim. Serviços de manutenção mensal.",
+      horarios: "Qua a Sáb | 8h às 17h",
+      historico: "Atende condomínios e casas na zona sul.",
+    },
+    {
+      id: 5,
+      nome: "Rafael Siqueira",
+      foto: null,
+      categoria: "Pintor",
+      preco: 110,
+      avaliacao: 4.8,
+      avaliacoes: 31,
+      distancia: 3,
+      especialidade: "Pintura interna e externa",
+      tags: ["Tinta", "Rapidez"],
+      resumo: "Trabalho limpo, entrega no prazo. Orçamento sem compromisso.",
+      horarios: "Seg a Sab | 8h às 18h",
+      historico: "Mais de 60 projetos entregues no centro.",
+    },
+    {
+      id: 6,
+      nome: "Beatriz Castro",
+      foto: null,
+      categoria: "Babá",
+      preco: 130,
+      avaliacao: 4.9,
+      avaliacoes: 53,
+      distancia: 5,
+      especialidade: "Cuidadora infantil",
+      tags: ["Criança", "Confiança"],
+      resumo: "Cuido de bebês e crianças, incluindo noite, com referências.",
+      horarios: "Todos os dias | 6h às 22h",
+      historico: "Ampla experiência, formada em pedagogia, CPR certificada.",
+    },
+    {
+      id: 7,
+      nome: "Marcelo Borges",
+      foto: null,
+      categoria: "Montador de Móveis",
+      preco: 80,
+      avaliacao: 4.4,
+      avaliacoes: 10,
+      distancia: 12,
+      especialidade: "Montagem e desmontagem",
+      tags: ["IKEA", "Flexibilidade"],
+      resumo: "Monta móveis de qualquer marca, suporte pós-montagem.",
+      horarios: "Seg a Sex | 8h às 18h",
+      historico: "Atende escritórios e residências.",
+    },
+    {
+      id: 8,
+      nome: "Carla Menezes",
+      foto: null,
+      categoria: "Manicure",
+      preco: 75,
+      avaliacao: 4.6,
+      avaliacoes: 22,
+      distancia: 1,
+      especialidade: "Alongamento de unhas",
+      tags: ["Spa", "Estética"],
+      resumo: "Atendimento a domicílio com materiais esterilizados.",
+      horarios: "Ter a Vin | 10h às 20h",
+      historico: "Clientes fixas na Vila Mariana.",
+    }
+  ];
+
+  const catalogo_CATEGORIAS = [
+    "Eletricista", "Encanador", "Diarista", "Jardineiro", "Pintor", "Babá", "Montador de Móveis", "Manicure"
+  ];
+
+  // Estado de filtros e busca
+  let catalogo_estado = {
+    busca: "",
+    categoria: "",
+    precoMin: "",
+    precoMax: "",
+    avaliacao: 0,
+    distancia: "",
+    ordenacao: "relevancia"
+  };
+
+  // Renderização dinâmica das categorias (horizontais)
+  function catalogo_renderCategorias() {
+    const el = document.getElementById('catalogo_categorias');
+    el.innerHTML = '';
+    const cats = ["Todos"].concat(catalogo_CATEGORIAS);
+    cats.forEach(cat => {
+      const sel = (cat === catalogo_estado.categoria) || (cat === "Todos" && !catalogo_estado.categoria);
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className =
+        'whitespace-nowrap px-4 py-2 rounded-full font-medium text-sm transition border ' +
+        (sel
+          ? 'bg-marca-700 border-marca-700 text-white shadow active:scale-95'
+          : 'bg-marca-50 border-marca-200 text-marca-700 hover:bg-marca-100 hover:border-marca-300 active:scale-95');
+      btn.textContent = cat;
+      btn.onclick = () => {
+        if(cat === "Todos") catalogo_estado.categoria = "";
+        else catalogo_estado.categoria = cat;
+        catalogo_renderCategorias();
+        catalogo_filtrar();
+      };
+      el.appendChild(btn);
+    });
+  }
+
+  function catalogo_abrirFiltros() {
+    document.getElementById('catalogo_p_min').value = catalogo_estado.precoMin || '';
+    document.getElementById('catalogo_p_max').value = catalogo_estado.precoMax || '';
+    document.getElementById('catalogo_avaliacao').value = catalogo_estado.avaliacao || 0;
+    document.getElementById('catalogo_distancia').value = catalogo_estado.distancia || '';
+    document.getElementById('catalogo_modal_filtros').showModal();
+  }
+  function catalogo_fecharFiltros() {
+    document.getElementById('catalogo_modal_filtros').close();
+  }
+  function catalogo_aplicarFiltros() {
+    catalogo_estado.precoMin = document.getElementById('catalogo_p_min').value;
+    catalogo_estado.precoMax = document.getElementById('catalogo_p_max').value;
+    catalogo_estado.avaliacao = parseFloat(document.getElementById('catalogo_avaliacao').value);
+    catalogo_estado.distancia = document.getElementById('catalogo_distancia').value;
+    catalogo_fecharFiltros();
+    catalogo_filtrar();
+    toast('Filtros aplicados!','ok');
+  }
+  function catalogo_limparFiltros() {
+    catalogo_estado = {
+      busca: "",
+      categoria: "",
+      precoMin: "",
+      precoMax: "",
+      avaliacao: 0,
+      distancia: "",
+      ordenacao: document.getElementById('catalogo_ordenacao').value || 'relevancia'
+    };
+    document.getElementById('catalogo_busca').value = "";
+    catalogo_renderCategorias();
+    catalogo_filtrar();
+    toast('Filtros limpos','info');
+  }
+
+  // Busca e ordenação dinâmica
+  function catalogo_filtrar() {
+    catalogo_estado.busca = document.getElementById('catalogo_busca').value.trim().toLowerCase();
+    catalogo_estado.ordenacao = document.getElementById('catalogo_ordenacao').value;
+    let lista = catalogo_PROFS.slice();
+
+    if(catalogo_estado.busca)
+      lista = lista.filter(p =>
+        p.nome.toLowerCase().includes(catalogo_estado.busca) ||
+        p.categoria.toLowerCase().includes(catalogo_estado.busca) ||
+        p.especialidade.toLowerCase().includes(catalogo_estado.busca)
+      );
+    if(catalogo_estado.categoria)
+      lista = lista.filter(p => p.categoria === catalogo_estado.categoria);
+    if(catalogo_estado.precoMin)
+      lista = lista.filter(p => p.preco >= Number(catalogo_estado.precoMin));
+    if(catalogo_estado.precoMax)
+      lista = lista.filter(p => p.preco <= Number(catalogo_estado.precoMax));
+
     <!-- TELAS -->
     </div>
 
