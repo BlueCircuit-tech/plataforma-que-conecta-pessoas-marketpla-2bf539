@@ -993,7 +993,246 @@
             <div class="text-marca-600 text-xs">Material incluso</div>
           </div>
           <div class="text-marca-900 font-semibold text-lg font-display">
-            <span id="detalhe_do_profissional_valor_0">R<!-- TELAS -->nbsp;89,00</span>
+            <span id="detalhe_do_profissional_valor_0">R<section data-tela="agendamento" class="hidden fadein flex flex-col gap-4 px-4 pb-24 pt-3 max-w-[430px] mx-auto font-body bg-marca-50 min-h-screen">
+  <!-- Cabeçalho -->
+  <header class="flex flex-col gap-0.5">
+    <h1 class="font-display text-2xl text-marca-900 font-bold">Agendar Serviço</h1>
+    <p class="text-marca-700 text-sm">Escolha o serviço, a data e confirme seu agendamento.</p>
+  </header>
+
+  <!-- Seleção de serviço -->
+  <div class="card flex flex-col gap-2">
+    <label for="agendamento_servico" class="text-marca-900 text-base font-semibold">Serviço</label>
+    <div class="relative">
+      <select id="agendamento_servico" class="w-full rounded-lg border border-marca-200 px-3 py-2 text-marca-900 bg-white shadow-sm focus:outline-marca-500 transition" onchange="agendamento_atualizarResumo()">
+        <option value="" disabled selected>Selecione um serviço...</option>
+        <option value="eletricista">Eletricista</option>
+        <option value="conserto-ar">Conserto de Ar Condicionado</option>
+        <option value="pintura">Pintura Residencial</option>
+        <option value="reforma">Pequena Reforma</option>
+        <option value="limpeza">Limpeza Pós-Obra</option>
+        <option value="jardinagem">Jardinagem</option>
+        <option value="hidraulica">Serviço Hidráulico</option>
+        <option value="montagem-moveis">Montagem de Móveis</option>
+      </select>
+      <span class="absolute right-3 top-2 pointer-events-none">
+        <svg class="w-5 h-5 text-marca-500" viewBox="0 0 20 20" fill="none"><path d="M7 8l3 3 3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </span>
+    </div>
+  </div>
+
+  <!-- Calendário de datas -->
+  <div class="card flex flex-col gap-2">
+    <label class="text-marca-900 text-base font-semibold mb-1">Data</label>
+    <div id="agendamento_calendario" class="flex flex-col gap-2">
+      <div class="flex justify-between items-center">
+        <button type="button" class="rounded-full bg-marca-200 p-1 transition hover:bg-marca-300 active:scale-95" onclick="agendamento_mudarMes(-1)">
+          <svg class="w-5 h-5 text-marca-700" viewBox="0 0 20 20"><path d="M12 6l-4 4 4 4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        </button>
+        <span id="agendamento_mes_atual" class="font-bold text-marca-700 text-base"></span>
+        <button type="button" class="rounded-full bg-marca-200 p-1 transition hover:bg-marca-300 active:scale-95" onclick="agendamento_mudarMes(1)">
+          <svg class="w-5 h-5 text-marca-700" viewBox="0 0 20 20"><path d="M8 6l4 4-4 4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div id="agendamento_dias" class="grid grid-cols-7 gap-1 mt-2"></div>
+    </div>
+  </div>
+
+  <!-- Seleção de horário -->
+  <div class="card flex flex-col gap-2">
+    <label class="text-marca-900 text-base font-semibold mb-1">Horário</label>
+    <div id="agendamento_horarios" class="grid grid-cols-3 gap-2"></div>
+  </div>
+
+  <!-- Endereço do serviço -->
+  <div class="card flex flex-col gap-2">
+    <label class="text-marca-900 text-base font-semibold mb-1">Endereço</label>
+    <div class="flex flex-col gap-2">
+      <input id="agendamento_endereco" type="text" placeholder="Digite o endereço ou escolha no mapa"
+        class="w-full rounded-lg border border-marca-200 px-3 py-2 text-marca-900 bg-white shadow-sm focus:outline-marca-500 transition"
+        value="Rua das Flores, 125, Jardim Primavera, São Paulo - SP"
+        oninput="agendamento_atualizarResumo()"/>
+      <button type="button" class="flex items-center gap-2 justify-center rounded-lg bg-marca-100 text-marca-700 font-medium px-3 py-2 shadow transition hover:bg-marca-200 active:scale-95"
+        onclick="agendamento_abrirMapa()">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16.88 3.549a9 9 0 0 1 4.12 7.45c0 5-7 13-7 13s-7-8-7-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="11" r="3"/></svg>
+        Escolher no mapa
+      </button>
+    </div>
+  </div>
+
+  <!-- Observações -->
+  <div class="card flex flex-col gap-2">
+    <label class="text-marca-900 text-base font-semibold mb-1">Observações (opcional)</label>
+    <textarea id="agendamento_obs" rows="2" placeholder="Detalhe suas necessidades..." class="w-full rounded-lg border border-marca-200 px-3 py-2 text-marca-900 bg-white shadow-sm focus:outline-marca-500 transition resize-none"></textarea>
+  </div>
+
+  <!-- Resumo do Agendamento -->
+  <div class="card flex flex-col gap-2 border-marca-100 border">
+    <div class="flex items-center gap-2 mb-1">
+      <svg class="w-5 h-5 text-marca-700" fill="none" viewBox="0 0 20 20"><path d="M6.5 15c1.104 0 2-1.12 2-2.5S7.604 10 6.5 10c-1.104 0-2 1.12-2 2.5S5.396 15 6.5 15zm7-9a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM18 13c0 2.21-3.358 4-7.5 4S3 15.21 3 13c0-2.21 3.358-4 7.5-4S18 10.79 18 13z" stroke="currentColor" stroke-width="1.2"/></svg>
+      <span class="font-display text-marca-700 text-base font-semibold">Resumo do Agendamento</span>
+    </div>
+    <div class="flex flex-col gap-2 text-sm text-marca-900" id="agendamento_resumo">
+      <span><b>Serviço:</b> <span id="agendamento_resumo_servico">-</span></span>
+      <span><b>Data:</b> <span id="agendamento_resumo_data">-</span></span>
+      <span><b>Horário:</b> <span id="agendamento_resumo_horario">-</span></span>
+      <span><b>Endereço:</b> <span id="agendamento_resumo_endereco">-</span></span>
+      <span class="flex items-center gap-1"><b>Valor estimado:</b> <span id="agendamento_resumo_valor" class="text-marca-600 font-semibold text-lg">R$ 0,00</span></span>
+    </div>
+  </div>
+
+  <!-- Rodapé com botão confirmar -->
+  <footer class="fixed bottom-0 left-0 right-0 max-w-[430px] mx-auto flex justify-center bg-white py-3 shadow-lg z-10">
+    <button type="button"
+      class="btn w-[95%] bg-marca-500 text-white font-display font-bold text-lg rounded-xl py-3 transition hover:bg-marca-600 active:scale-95 shadow-lg"
+      onclick="agendamento_confirmar()">
+      Confirmar Agendamento
+    </button>
+  </footer>
+
+  <!-- Modal do mapa -->
+  <div id="agendamento_modalMapa" class="hidden fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-2xl w-[90vw] max-w-[410px] p-6 relative flex flex-col items-center">
+      <button type="button" class="absolute top-3 right-3 rounded-full bg-marca-100 p-1 hover:bg-marca-200 transition" onclick="agendamento_fecharMapa()">
+        <svg class="w-5 h-5 text-marca-700" viewBox="0 0 20 20"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+      </button>
+      <h2 class="font-display text-xl text-marca-900 mb-2">Escolha no Mapa</h2>
+      <div class="w-full h-48 rounded-lg bg-gradient-to-br from-marca-50 via-marca-200 to-marca-100 flex items-center justify-center text-marca-500 font-bold text-2xl mb-4">
+        <svg class="w-14 h-14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M16.88 3.549a9 9 0 0 1 4.12 7.45c0 5-7 13-7 13s-7-8-7-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="11" r="3"/></svg>
+      </div>
+      <input type="text" id="agendamento_modal_endereco" class="w-full rounded-lg border border-marca-200 px-3 py-2 text-marca-900 bg-white shadow-sm focus:outline-marca-500 transition mb-3" placeholder="Insira endereço..."/>
+      <button type="button"
+        class="btn w-full bg-marca-500 text-white font-bold text-lg rounded-lg py-2 transition hover:bg-marca-600 active:scale-95 mt-1"
+        onclick="agendamento_salvarEnderecoNoMapa()">
+        Confirmar Endereço
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Dados de exemplo para teste
+    const agendamento_servicos = {
+      eletricista: { nome:"Eletricista", valor:120 },
+      "conserto-ar": { nome:"Conserto de Ar Condicionado", valor:180 },
+      pintura: { nome:"Pintura Residencial", valor:250 },
+      reforma: { nome:"Pequena Reforma", valor:330 },
+      limpeza: { nome:"Limpeza Pós-Obra", valor:140 },
+      jardinagem: { nome:"Jardinagem", valor:100 },
+      hidraulica: { nome:"Serviço Hidráulico", valor:150 },
+      "montagem-moveis": { nome:"Montagem de Móveis", valor:90 }
+    };
+    // Horários de trabalho plausíveis por serviço
+    const agendamento_horarios_base = [
+      "08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00", "17:00"
+    ];
+    // Dias disponíveis: próximos 40 dias, aleatoriamente indisponíveis
+    let agendamento_dataAtual = new Date();
+    let agendamento_mesOffset = 0;
+    let agendamento_diaSelecionado = null;
+    let agendamento_horarioSelecionado = null;
+    function agendamento_mudarMes(delta) {
+      agendamento_mesOffset += delta;
+      let base = new Date();
+      base.setMonth(base.getMonth() + agendamento_mesOffset);
+      agendamento_dataAtual = base;
+      agendamento_renderCalendario();
+      agendamento_horarioSelecionado = null;
+      agendamento_renderHorarios();
+      agendamento_atualizarResumo();
+    }
+    function agendamento_renderCalendario() {
+      const mes = agendamento_dataAtual.getMonth();
+      const ano = agendamento_dataAtual.getFullYear();
+      document.getElementById('agendamento_mes_atual').textContent =
+        agendamento_nomeMes(mes) + " / " + ano;
+      // Gera 40 dias, variando data
+      let dias = [];
+      for (let i = 0; i < 40; i++) {
+        let dia = new Date();
+        dia.setMonth(mes);
+        dia.setFullYear(ano);
+        dia.setDate(i + 1);
+        if (dia.getMonth() !== mes) break;
+        dias.push(dia);
+      }
+      // Dias indisponíveis: sábado/domingo e alguns aleatórios
+      const indisponiveis = dias.filter(d => d.getDay() === 0 || d.getDay() === 6)
+        .map(d => d.getDate());
+      for (let i=0;i<dias.length;i++) { if(Math.random()<0.13) indisponiveis.push(dias[i].getDate()); }
+      // Grid
+      const grid = [];
+      let offset = (new Date(ano, mes, 1)).getDay();
+      for(let i=0;i<offset;i++) grid.push(null);
+      dias.forEach(d=>{
+        grid.push(d);
+      });
+      const diasEl = document.getElementById('agendamento_dias');
+      diasEl.innerHTML = "";
+      grid.slice(0,42).forEach((dia,idx)=>{
+        if(!dia) {
+          diasEl.innerHTML += `<div class="h-9"></div>`;
+        } else {
+          const indisp = indisponiveis.includes(dia.getDate());
+          const sel = (agendamento_diaSelecionado && agendamento_diaSelecionado.getDate()===dia.getDate() && agendamento_diaSelecionado.getMonth()===dia.getMonth() && agendamento_diaSelecionado.getFullYear()===dia.getFullYear());
+          diasEl.innerHTML += `<button type="button"
+            class="rounded-full w-9 h-9 flex items-center justify-center transition font-bold text-sm
+            ${indisp ? 'bg-marca-100 text-marca-300 cursor-not-allowed' :
+              (sel ? 'bg-marca-500 text-white scale-105 shadow-lg' : 'bg-marca-200 text-marca-900 hover:bg-marca-500 hover:text-white')}
+            "
+            ${indisp?'disabled':`onclick="agendamento_selecionarDia(${dia.getFullYear()},${dia.getMonth()},${dia.getDate()})"`}
+            >${dia.getDate()}</button>`;
+        }
+      });
+    }
+    function agendamento_nomeMes(idx) {
+      return ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"][idx];
+    }
+    function agendamento_selecionarDia(ano,mes,dia) {
+      agendamento_diaSelecionado = new Date(ano,mes,dia);
+      agendamento_renderCalendario();
+      agendamento_horarioSelecionado = null;
+      agendamento_renderHorarios();
+      agendamento_atualizarResumo();
+      toast("Data selecionada: " + dataBR(agendamento_diaSelecionado.toISOString()),"ok");
+    }
+    function agendamento_renderHorarios() {
+      const horarios = agendamento_horarios_base;
+      let horariosEl = document.getElementById('agendamento_horarios');
+      horariosEl.innerHTML = "";
+      if(!agendamento_diaSelecionado) {
+        horariosEl.innerHTML = `<span class="col-span-3 text-marca-400 italic">Selecione uma data acima</span>`;
+        return;
+      }
+      // Simula horários indisponíveis aleatórios
+      let indisponiveis = [];
+      horarios.forEach((h,idx)=>{
+        if(Math.random()<0.18) indisponiveis.push(idx);
+      });
+      horarios.forEach((h,idx)=>{
+        let sel = agendamento_horarioSelecionado === h;
+        horariosEl.innerHTML += `
+          <button type="button"
+            class="rounded-lg px-3 py-2 font-semibold text-sm transition
+            ${indisponiveis.includes(idx) ? 'bg-marca-100 text-marca-300 cursor-not-allowed' :
+            (sel ? 'bg-marca-500 text-white scale-105 shadow-lg' : 'bg-marca-200 text-marca-900 hover:bg-marca-500 hover:text-white')}
+            "
+            ${indisponiveis.includes(idx)?'disabled':`onclick="agendamento_selecionarHorario('${h}')"`}>
+            ${h}
+          </button>
+        `;
+      });
+    }
+    function agendamento_selecionarHorario(h) {
+      agendamento_horarioSelecionado = h;
+      agendamento_renderHorarios();
+      agendamento_atualizarResumo();
+      toast("Horário selecionado: " + h,"ok");
+    }
+    function agendamento_atualizarResumo() {
+      let servico = document.getElementById('agendamento_servico').value;
+      let endereco = document.getElementById('agendamento_endereco').value;
+
+    <!-- TELAS -->nbsp;89,00</span>
           </div>
         </li>
         <li class="card flex items-center justify-between py-3 px-4 cursor-pointer hover:ring-2 transition ring-marca-300/20"
