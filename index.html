@@ -905,6 +905,169 @@
     if(catalogo_estado.precoMax)
       lista = lista.filter(p => p.preco <= Number(catalogo_estado.precoMax));
 
+    <section data-tela="detalhe-do-profissional" class="hidden animate-fadein px-0 pt-0 pb-24">
+  <!-- Capa do profissional -->
+  <div class="relative w-full h-40 rounded-b-3xl overflow-hidden bg-gradient-to-tr from-marca-600 to-marca-400 flex items-end">
+    <svg class="absolute inset-0 w-full h-full opacity-30" viewBox="0 0 430 150" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gp" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#4C1D95"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs><rect width="430" height="150" rx="40" fill="url(#gp)"/></svg>
+    <button onclick="detalhe_do_profissional_voltar()" class="absolute left-3 top-3 bg-marca-700/70 hover:bg-marca-900 transition rounded-full w-9 h-9 flex items-center justify-center shadow-md active:scale-95" aria-label="Voltar">
+      <svg width="24" height="24" fill="none" stroke="#FFF" stroke-width="2"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button id="detalhe_do_profissional_favorito" class="absolute right-3 top-3 w-9 h-9 rounded-full bg-marca-700/70 hover:bg-marca-900 flex items-center justify-center shadow-md transition active:scale-95" aria-label="Favoritar" onclick="detalhe_do_profissional_toggleFavorito()">
+      <svg id="detalhe_do_profissional_star" width="24" height="24" fill="none" stroke="#fff" stroke-width="2"><polygon points="12,3.6 15,9 21,10 16.5,13.9 18,20 12,16.8 6,20 7.5,13.9 3,10 9,9" stroke-linecap="round" stroke-linejoin="round"/><polygon id="detalhe_do_profissional_star_fill" points="12,3.6 15,9 21,10 16.5,13.9 18,20 12,16.8 6,20 7.5,13.9 3,10 9,9" fill="none"/></svg>
+    </button>
+    <div class="flex items-end px-6 pb-4 w-full relative z-10">
+      <span class="w-20 h-20 rounded-full bg-gradient-to-tr from-marca-200 to-marca-50 shadow-xl justify-center items-center flex ring-4 ring-marca-50 -mb-8 z-20 border border-marca-300">
+        <span class="text-marca-800 font-bold text-3xl font-display select-none">MC</span>
+      </span>
+      <!-- espaço reservado p/ alinhar -->
+    </div>
+  </div>
+
+  <!-- Cabeçalho -->
+  <div class="pt-12 pb-4 px-6 flex flex-col gap-1">
+    <div class="flex items-center gap-2">
+      <h1 class="text-xl font-display font-bold text-marca-900">Mariana Cunha</h1>
+      <span id="detalhe_do_profissional_status" class="badge bg-marca-100 text-marca-800 border-marca-300 font-body text-xs">Verificado</span>
+    </div>
+    <span class="text-marca-700 text-[15px] font-semibold font-body">Eletricista Residencial</span>
+    <div class="flex items-center gap-2 pt-2">
+      <div class="flex items-center gap-0.5">
+        <svg width="18" height="18" fill="#FEE500"><polygon points="9,2.5 11,6.9 15.8,7.3 12.5,10.5 13.5,15.2 9,12.8 4.5,15.2 5.5,10.5 2.2,7.3 7,6.9"/></svg>
+        <span class="ml-0.5 text-base font-display font-semibold text-marca-900" id="detalhe_do_profissional_nota">4.8</span>
+      </div>
+      <span class="text-marca-700 text-sm font-body">(163 avaliações)</span>
+      <button class="ml-2 px-2 py-0.5 rounded bg-marca-100 text-marca-700 hover:bg-marca-200 transition flex items-center text-xs font-semibold active:scale-95"
+        onclick="detalhe_do_profissional_scrollAba('avaliacoes')">
+        <svg width="14" height="14" fill="none" stroke="#8B5CF6" stroke-width="2" class="mr-1"><path d="M7 2v10M12 7H2"/></svg>
+        Avaliações
+      </button>
+    </div>
+  </div>
+
+  <!-- Abas -->
+  <nav class="flex justify-between gap-1 mx-4 mt-2 border-b border-marca-100 font-display font-medium text-marca-600" id="detalhe_do_profissional_abas">
+    <button class="w-1/4 py-3 border-b-2 border-transparent transition-colors" data-aba="sobre" onclick="detalhe_do_profissional_trocarAba('sobre')" id="detalhe_do_profissional_aba_sobre">Sobre</button>
+    <button class="w-1/4 py-3 border-b-2 border-transparent transition-colors" data-aba="servicos" onclick="detalhe_do_profissional_trocarAba('servicos')" id="detalhe_do_profissional_aba_servicos">Serviços</button>
+    <button class="w-1/4 py-3 border-b-2 border-transparent transition-colors" data-aba="avaliacoes" onclick="detalhe_do_profissional_trocarAba('avaliacoes')" id="detalhe_do_profissional_aba_avaliacoes">Avaliações</button>
+    <button class="w-1/4 py-3 border-b-2 border-transparent transition-colors" data-aba="disponibilidade" onclick="detalhe_do_profissional_trocarAba('disponibilidade')" id="detalhe_do_profissional_aba_disponibilidade">Disponibilidade</button>
+  </nav>
+
+  <!-- Conteúdo das Abas -->
+  <div class="px-4 pt-4" id="detalhe_do_profissional_abas_content">
+
+    <!-- ABA: SOBRE -->
+    <div id="detalhe_do_profissional_content_sobre" class="detalhe_do_profissional_aba active">
+      <div class="mb-4">
+        <h2 class="font-display text-marca-900 font-semibold text-lg mb-1">Sobre Mariana</h2>
+        <p class="text-marca-800 text-base mb-2 font-body leading-snug">Sou eletricista residencial com 9 anos de experiência, atendendo clientes em toda Belo Horizonte e região. Prezo por serviço seguro, limpo e pontual, com diagnóstico detalhado e orçamento justo.</p>
+        <ul class="mt-3 space-y-2">
+          <li class="flex items-center gap-2"><svg width="18" height="18" fill="none" stroke="#4C1D95" stroke-width="2"><circle cx="9" cy="9" r="7"/><path d="M6 10l2 2 4-4"/></svg><span class="font-body text-marca-700 text-sm">CREA/MG nº 1245789</span></li>
+          <li class="flex items-center gap-2"><svg width="18" height="18" fill="none" stroke="#4C1D95" stroke-width="2"><path d="M2 14l7-7 4 4 5-5"/><path d="M14 9v5h-5"/></svg><span class="font-body text-marca-700 text-sm">Certificação NR-10</span></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-display text-marca-900 font-semibold text-base mb-2">Documentos</h3>
+        <div class="flex gap-3">
+          <button class="flex items-center px-2.5 py-2 rounded-lg border border-marca-200 bg-marca-50 text-marca-700 hover:bg-marca-100 transition active:scale-95"
+            onclick="abrirModal('<h3 class=&quot;text-marca-800 font-bold&quot;>Documento CREA/MG - Mariana Cunha</h3><p class=&quot;mb-2 text-marca-700&quot;>CREA/MG nº 1245789, válido até 12/2026<br>Emitido em Belo Horizonte/MG</p><img src=&quot;https://placehold.co/260x180/FAF5FF/4C1D95?text=Digitalização&quot; class=&quot;rounded-lg border border-marca-200 mx-auto my-4 max-w-full&quot; alt=&quot;Documento CREA&quot;>')">
+            <svg width="16" height="16" fill="none" stroke="#4C1D95" stroke-width="2" class="mr-1"><rect x="3" y="2" width="10" height="12" rx="2" /><path d="M7 2v2.5a1 1 0 001 1h3"/></svg>
+            CREA/MG
+          </button>
+          <button class="flex items-center px-2.5 py-2 rounded-lg border border-marca-200 bg-marca-50 text-marca-700 hover:bg-marca-100 transition active:scale-95"
+            onclick="abrirModal('<h3 class=&quot;text-marca-800 font-bold&quot;>Certificação NR-10</h3><p class=&quot;mb-2 text-marca-700&quot;>Certificado de treinamento NR-10 reconhecido pelo SENAI. Válido até 07/2025.</p><img src=&quot;https://placehold.co/260x180/8B5CF6/FAF5FF?text=NR-10&quot; class=&quot;rounded-lg border border-marca-200 mx-auto my-4 max-w-full&quot; alt=&quot;NR-10&quot;>')">
+            <svg width="16" height="16" fill="none" stroke="#4C1D95" stroke-width="2" class="mr-1"><rect x="3" y="2" width="10" height="12" rx="2" /><path d="M7 2v2.5a1 1 0 001 1h3"/></svg>
+            NR-10
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA: SERVIÇOS -->
+    <div id="detalhe_do_profissional_content_servicos" class="detalhe_do_profissional_aba hidden">
+      <h2 class="font-display text-marca-900 font-semibold text-lg mb-4">Serviços prestados</h2>
+      <ul class="space-y-3">
+        <li class="card flex items-center justify-between py-3 px-4 cursor-pointer hover:ring-2 transition ring-marca-300/20"
+          onclick="detalhe_do_profissional_modalServico(0)">
+          <div>
+            <div class="font-body text-base text-marca-800">Instalação de tomadas</div>
+            <div class="text-marca-600 text-xs">Material incluso</div>
+          </div>
+          <div class="text-marca-900 font-semibold text-lg font-display">
+            <span id="detalhe_do_profissional_valor_0">R<!-- TELAS -->nbsp;89,00</span>
+          </div>
+        </li>
+        <li class="card flex items-center justify-between py-3 px-4 cursor-pointer hover:ring-2 transition ring-marca-300/20"
+          onclick="detalhe_do_profissional_modalServico(1)">
+          <div>
+            <div class="font-body text-base text-marca-800">Troca de disjuntores</div>
+            <div class="text-marca-600 text-xs">Diagnóstico incluso</div>
+          </div>
+          <div class="text-marca-900 font-semibold text-lg font-display">
+            <span id="detalhe_do_profissional_valor_1">R<!-- TELAS -->nbsp;120,00</span>
+          </div>
+        </li>
+        <li class="card flex items-center justify-between py-3 px-4 cursor-pointer hover:ring-2 transition ring-marca-300/20"
+          onclick="detalhe_do_profissional_modalServico(2)">
+          <div>
+            <div class="font-body text-base text-marca-800">Vistoria elétrica residencial</div>
+            <div class="text-marca-600 text-xs">Laudo digital</div>
+          </div>
+          <div class="text-marca-900 font-semibold text-lg font-display">
+            <span id="detalhe_do_profissional_valor_2">R<!-- TELAS -->nbsp;290,00</span>
+          </div>
+        </li>
+        <li class="card flex items-center justify-between py-3 px-4 cursor-pointer hover:ring-2 transition ring-marca-300/20"
+          onclick="detalhe_do_profissional_modalServico(3)">
+          <div>
+            <div class="font-body text-base text-marca-800">Instalação de ventilador de teto</div>
+            <div class="text-marca-600 text-xs">Serviço com garantia</div>
+          </div>
+          <div class="text-marca-900 font-semibold text-lg font-display">
+            <span id="detalhe_do_profissional_valor_3">R<!-- TELAS -->nbsp;160,00</span>
+          </div>
+        </li>
+        <li class="card flex items-center justify-between py-3 px-4 cursor-pointer hover:ring-2 transition ring-marca-300/20"
+          onclick="detalhe_do_profissional_modalServico(4)">
+          <div>
+            <div class="font-body text-base text-marca-800">Troca de fiação antiga</div>
+            <div class="text-marca-600 text-xs">Orçamento rápido</div>
+          </div>
+          <div class="text-marca-900 font-semibold text-lg font-display">
+            <span id="detalhe_do_profissional_valor_4">R<!-- TELAS -->nbsp;por orçamento</span>
+          </div>
+        </li>
+        <li class="card flex items-center justify-between py-3 px-4 cursor-pointer hover:ring-2 transition ring-marca-300/20"
+          onclick="detalhe_do_profissional_modalServico(5)">
+          <div>
+            <div class="font-body text-base text-marca-800">Instalação de chuveiro</div>
+            <div class="text-marca-600 text-xs">Sem surpresa no valor</div>
+          </div>
+          <div class="text-marca-900 font-semibold text-lg font-display">
+            <span id="detalhe_do_profissional_valor_5">R<!-- TELAS -->nbsp;90,00</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ABA: AVALIAÇÕES -->
+    <div id="detalhe_do_profissional_content_avaliacoes" class="detalhe_do_profissional_aba hidden">
+      <h2 class="font-display text-marca-900 font-semibold text-lg mb-2">Avaliações de clientes</h2>
+      <div id="detalhe_do_profissional_filtros_avaliacao" class="flex flex-wrap gap-2 mb-4">
+        <input id="detalhe_do_profissional_busca_avaliacoes" type="text" placeholder="Buscar por nome ou palavra..." class="px-3 py-2 rounded-lg border border-marca-200 bg-marca-50 font-body text-marca-800 text-sm w-full focus:outline-marca-400 transition">
+        <select id="detalhe_do_profissional_filtro_nota" class="px-3 py-2 rounded-lg border border-marca-200 bg-marca-50 font-body text-marca-800 text-sm focus:outline-marca-400 transition">
+          <option value="">Todas as notas</option>
+          <option value="5">Só 5 estrelas</option>
+          <option value="4">4 estrelas ou mais</option>
+          <option value="3">3 estrelas ou mais</option>
+        </select>
+        <button class="ml-auto bg-marca-100 text-marca-700 rounded-lg px-3 py-2 font-body font-medium hover:bg-marca-200 active:scale-95 transition" onclick="detalhe_do_profissional_limparFiltroAvaliacao()">Limpar filtros</button>
+      </div>
+      <ul id="detalhe_do_profissional_lista_avaliacoes" class="space-y-4">
+        <!-- Render dynamic -->
+      </ul>
+      <div id="detalhe_do_profissional_vazio_avaliacao" class="hidden flex flex-col items-center text-center py-12 gap-3">
+        <svg width="54" height="54" fill="none"><circle cx="27" cy="27" r="27" fill="#F3E8FF"/><path d="M35 28a8 8 0 10-16 0h16zM15 34s2-2 9-2 9 2 9 2" stroke="#8B5CF6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="20" cy="24" r="1.3" fill="#4C1D95"/><circle cx="34" cy="24" r="1.3" fill="#4C1D95"/></svg>
+
     <!-- TELAS -->
     </div>
 
